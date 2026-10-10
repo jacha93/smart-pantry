@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Pantry: Design-Referenz Vorrat (Variante F)</title>
+<!--
+  DESIGN-REFERENZ, freigegeben von Jakob am 2026-10-10 (Variante F).
+  Verbindliche Sichtvorlage zur DESIGN.md. Kein Produktcode: Beispieldaten, Schriften und
+  Icons kommen hier von fremden Servern; im Produkt werden sie selbst ausgeliefert.
+  Alle Maße in CSS-Pixeln. Namen der Variablen entsprechen den Token in der DESIGN.md.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+  *{box-sizing:border-box;margin:0}
+  :root{
+    /* Flächen */
+    --canvas:#06070A; --surface-1:#0C0E13; --surface-2:#12151C; --hairline:#242A37;
+    /* Text */
+    --ink:#EDF1F7; --ink-muted:#98A2B3;
+    /* Akzent und KI */
+    --accent:#2FD9F0; --on-accent:#06222A; --ki:#E0468F; --ki-text:#F58BB8;
+    /* Zustand */
+    --state-ok:#4FBF8B; --state-soon:#E0A93B; --state-over:#E5645B;
+    /* Form */
+    --radius-control:12px; --radius-card:8px; --radius-chip:4px; --radius-scan:22px; --radius-bar:2px;
+    /* Schrift und Bewegung */
+    --font:"Geist",system-ui,sans-serif; --ease-out:cubic-bezier(.16,1,.3,1);
+  }
+  body{background:var(--canvas);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.45;min-height:100dvh}
+  .ref-note{padding:14px 20px;border-bottom:1px solid var(--hairline);font-size:14px;color:var(--ink-muted)}
+  .ref-note strong{color:var(--ink);font-weight:600}
+  main{max-width:1400px;margin:0 auto;padding:28px 20px 64px;display:grid;grid-template-columns:390px 1fr;gap:40px;align-items:start}
+  @media (max-width:980px){main{grid-template-columns:1fr}}
+  .ref-label{font-size:14px;font-weight:500;color:var(--ink-muted);margin-bottom:12px}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* ---------- Handy: Rahmen der Vorlage (gehört nicht zum Produkt) ---------- */
+  .phone{background:var(--surface-1);border:1px solid var(--hairline);border-radius:36px;padding:14px;position:relative;overflow:hidden;height:780px;display:flex;flex-direction:column}
+
+  /* ---------- Kopf der Ansicht ---------- */
+  .view-head{display:flex;align-items:center;justify-content:space-between;padding:10px 8px 14px}
+  .view-title{font-size:26px;font-weight:600;letter-spacing:-.02em;line-height:1.45}
+  .view-sub{font-size:14px;color:var(--ink-muted)}
+  .icon-button{width:48px;height:48px;border-radius:var(--radius-control);border:1px solid var(--hairline);background:transparent;color:var(--ink);font-size:22px;display:grid;place-items:center;cursor:pointer}
+
+  /* ---------- Filter-Knöpfe ---------- */
+  .filters{display:flex;gap:8px;padding:0 8px 12px;overflow:auto}
+  .filter{white-space:nowrap;padding:10px 16px;min-height:44px;border-radius:var(--radius-chip);border:1px solid var(--hairline);background:transparent;color:var(--ink-muted);font:inherit;font-size:14px;cursor:pointer}
+  .filter[aria-pressed=true]{color:var(--ink);border-color:var(--ink)}
+
+  /* ---------- Liste und Gruppen ---------- */
+  .stock{flex:1;overflow:auto;padding:0 4px 16px;display:flex;flex-direction:column;gap:8px}
+  .group-head{display:flex;justify-content:space-between;align-items:baseline;padding:10px 6px 2px;font-size:13px;color:var(--ink-muted)}
+  .group-head b{font-size:15px;font-weight:600;color:var(--ink)}
+  .group-body{display:flex;flex-direction:column;gap:8px}
+
+  /* ---------- Vorrats-Karte: Balken | Datum | kurze gestrichelte Linie | Produkt ---------- */
+  .item{display:grid;grid-template-columns:4px 88px 1fr;column-gap:8px;align-items:center;padding-left:8px;min-height:66px;background:var(--surface-2);border:1px solid var(--hairline);border-radius:var(--radius-card);overflow:hidden;transition:border-color .3s}
+  .item-bar{align-self:stretch;margin:10px 0;border-radius:var(--radius-bar);background:var(--state-ok)}
+  .item-date{padding:4px 10px 4px 0;border-right:1px dashed var(--hairline);font-size:14px;font-weight:600;line-height:1.45;color:var(--state-ok)}
+  .item-date small{display:block;font-size:12px;font-weight:400;color:var(--ink-muted);white-space:nowrap}
+  .item-text{margin-left:-8px;padding:10px 14px;min-width:0}
+  .item-name{font-size:16px;font-weight:500}
+  .item-meta{font-size:14px;color:var(--ink-muted)}
+  .is-soon .item-bar{background:var(--state-soon)} .is-soon .item-date{color:var(--state-soon)}
+  .is-over .item-bar{background:var(--state-over)} .is-over .item-date{color:var(--state-over)}
+  .item.is-new{border-color:var(--accent)}
+  /* Mini-Zeile für alles, was Zeit hat */
+  .item--mini{min-height:50px}
+  .item--mini .item-date small{display:none}
+  .item--mini .item-text{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 14px}
+  .item--mini .item-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .item--mini .item-meta{white-space:nowrap}
+
+  /* ---------- Navigation mit Scan-Knopf in der Mitte ---------- */
+  .tabbar{display:grid;grid-template-columns:1fr 1fr 76px 1fr 1fr;align-items:end;border-top:1px solid var(--hairline);margin:10px -14px -14px;padding:8px 6px 14px;background:var(--surface-1)}
+  .tab{background:none;border:0;color:var(--ink-muted);font:inherit;font-size:12px;display:grid;justify-items:center;gap:4px;min-height:56px;cursor:pointer}
+  .tab i{font-size:26px}
+  .tab[aria-current=page]{color:var(--accent)}
+  .scan{display:grid;place-items:center;width:68px;height:68px;margin:-30px auto 0;border-radius:var(--radius-scan);background:var(--accent);color:var(--on-accent);border:6px solid var(--surface-1);font-size:30px;cursor:pointer;transition:transform .15s}
+  .scan:active{transform:scale(.97)}
+  .fly{position:absolute;z-index:5;padding:10px 16px;border-radius:var(--radius-control);background:var(--accent);color:var(--on-accent);font-weight:600;font-size:14px;pointer-events:none}
+
+  /* ---------- Desktop: Werkzeugleiste und Kärtchen ---------- */
+  .panel{background:var(--surface-1);border:1px solid var(--hairline);border-radius:var(--radius-card);overflow:hidden}
+  .toolbar{display:flex;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--hairline)}
+  .search{flex:1;max-width:320px;background:var(--canvas);border:1px solid var(--hairline);color:var(--ink);font:inherit;font-size:14px;padding:9px 12px;border-radius:var(--radius-control)}
+  .button{padding:9px 14px;border-radius:var(--radius-control);border:1px solid var(--hairline);background:transparent;color:var(--ink);font:inherit;font-size:14px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+  .button--ki{border-color:var(--ki);color:var(--ki-text)}
+  .rows{display:flex;flex-direction:column;gap:6px;padding:10px}
+  .rows-head,.rowcard{display:grid;grid-template-columns:4px 1.6fr 1.1fr .7fr 1fr .7fr .8fr;gap:14px;align-items:center;font-size:14px}
+  .rows-head{color:var(--ink-muted);padding:4px 12px 4px 8px}
+  .rows-group{display:flex;gap:10px;align-items:baseline;padding:10px 12px 2px 8px;font-size:13px;color:var(--ink-muted)}
+  .rows-group b{font-size:14px;font-weight:600;color:var(--ink)}
+  .rows-group ~ .rows-group{margin-top:10px}
+  .rowcard{min-height:42px;padding:0 12px 0 8px;background:var(--surface-2);border:1px solid var(--hairline);border-radius:var(--radius-card)}
+  .rowcard .item-bar{margin:8px 0}
+  .rowcard .num{font-variant-numeric:tabular-nums}
+  .rowcard .state{font-weight:600;color:var(--state-ok)}
+  .rowcard.is-soon .state{color:var(--state-soon)} .rowcard.is-over .state{color:var(--state-over)}
+  .rowcard--urgent{min-height:52px;font-size:15px}
+  .rowcard--urgent .name{font-weight:600}
+
+  /* ---------- Marketing-Kopf (Feinschliff folgt) ---------- */
+  .hero{margin-top:36px;display:grid;grid-template-columns:1.3fr 1fr;gap:28px;align-items:center;padding:36px;border:1px solid var(--hairline);border-radius:var(--radius-card);background:var(--surface-1)}
+  @media (max-width:980px){.hero{grid-template-columns:1fr;padding:22px}}
+  .hero h3{font-size:clamp(30px,4vw,48px);line-height:1.05;letter-spacing:-.03em;font-weight:600}
+  .hero p{color:var(--ink-muted);margin:14px 0 22px;max-width:46ch}
+  .cta{display:inline-flex;height:52px;align-items:center;padding:0 24px;border-radius:var(--radius-control);background:var(--accent);color:var(--on-accent);font-weight:600;text-decoration:none}
+  .hero img{width:100%;max-width:240px;justify-self:center;border-radius:28%}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="ref-note"><strong>Design-Referenz Vorrat</strong> · Variante F, freigegeben am 10.10.2026 · Beispieldaten · gehört zur DESIGN.md</div>
+<main>
+  <section>
+    <p class="ref-label">Handy: Vorrat</p>
+    <div class="phone" id="phone">
+      <div class="view-head">
+        <div><h1 class="view-title">Vorrat</h1><div class="view-sub">Haushalt Leibel · 3 bald fällig</div></div>
+        <button class="icon-button" aria-label="Suchen"><i class="ph ph-magnifying-glass"></i></button>
+      </div>
+      <div class="filters">
+        <button class="filter" aria-pressed="true">Alle</button>
+        <button class="filter" aria-pressed="false">Bald fällig</button>
+        <button class="filter" aria-pressed="false">Kühlschrank</button>
+        <button class="filter" aria-pressed="false">Vorratsschrank</button>
+      </div>
+      <div class="stock">
+        <div class="group-head"><b>Jetzt aufbrauchen</b><span>3 Artikel</span></div>
+        <div class="group-body" id="urgent"></div>
+        <div class="group-head"><b>Hat Zeit</b><span>3 Artikel</span></div>
+        <div class="group-body" id="later"></div>
+      </div>
+      <nav class="tabbar" aria-label="Hauptnavigation">
+        <button class="tab" aria-current="page"><i class="ph ph-package"></i>Vorrat</button>
+        <button class="tab"><i class="ph ph-list-checks"></i>Einkauf</button>
+        <button class="scan" id="scan" aria-label="Scannen"><i class="ph ph-barcode"></i></button>
+        <button class="tab"><i class="ph ph-cooking-pot"></i>Rezepte</button>
+        <button class="tab"><i class="ph ph-house-line"></i>Haushalt</button>
+      </nav>
+    </div>
+  </section>
+  <section>
+    <p class="ref-label">Desktop: Vorrat</p>
+    <div class="panel">
+      <div class="toolbar">
+        <input class="search" aria-label="Vorrat durchsuchen" placeholder="Suchen">
+        <button class="button"><i class="ph ph-funnel"></i>Filter</button>
+        <button class="button"><i class="ph ph-plus"></i>Artikel</button>
+        <button class="button button--ki"><i class="ph ph-camera"></i>Foto erkennen</button>
+      </div>
+      <div class="rows" id="rows">
+        <div class="rows-head"><span></span><span>Artikel</span><span>Marke</span><span>Menge</span><span>Ort</span><span>Fällig</span><span>Zustand</span></div>
+        <div class="rows-group"><b>Jetzt aufbrauchen</b><span>3 Artikel</span></div>
+        <div class="rows-group" id="rows-later"><b>Hat Zeit</b><span>3 Artikel</span></div>
+      </div>
+    </div>
+    <div class="hero">
+      <div>
+        <h3>Wissen, was da ist. Bevor es abläuft.</h3>
+        <p>Smart Pantry führt den Vorrat für den ganzen Haushalt: scannen, einräumen, rechtzeitig aufbrauchen.</p>
+        <a class="cta" href="#">Einladung anfragen</a>
+      </div>
+      <img src="icon-480.png" alt="Icon von Smart Pantry: Kühlschrank und Liste als Leuchtlinie">
+    </div>
+  </section>
+</main>
+<script>
+  // Beispieldaten, aufsteigend nach Tagen bis zur Fälligkeit (k). Dringend: k <= 7.
+  const items=[
+    {n:'Schalotten',m:'Lidl',q:'500 g',o:'Vorratsschrank',d:'08.10.',t:'seit 2 Tagen',s:'over',k:-2},
+    {n:'Grobe Bratwurst',m:'Meine Metzgerei',q:'400 g',o:'Kühlschrank',d:'12.10.',t:'in 2 Tagen',s:'soon',k:2},
+    {n:'Curry Gewürzketchup',m:'ja!',q:'875 ml',o:'Kühlschrank',d:'14.10.',t:'in 4 Tagen',s:'soon',k:4},
+    {n:'Edamame ohne Schale',m:'Freshona',q:'400 g',o:'Gefrierfach',d:'03.03.',t:'in 5 Monaten',s:'ok',k:144},
+    {n:'Sonnenblumenöl',m:'Bellasan',q:'1 l',o:'Vorratsschrank',d:'06.2027',t:'in 8 Monaten',s:'ok',k:240},
+    {n:'Fusilli',m:'Combino',q:'500 g',o:'Vorratsschrank',d:'11.2027',t:'in 13 Monaten',s:'ok',k:400},
+  ];
+  const neu={n:'Sojasoße',m:'Vitasia',q:'250 ml',o:'Vorratsschrank',d:'09.2027',t:'in 11 Monaten',s:'ok',k:330};
+  const label={ok:'frisch',soon:'bald fällig',over:'abgelaufen'};
+  const $=id=>document.getElementById(id);
+  const el=(cls,html)=>{const e=document.createElement('div');e.className=cls;e.innerHTML=html;return e};
+  const item=i=>i.k<=7
+    ? el('item is-'+i.s,`<span class="item-bar"></span><div class="item-date">${i.d}<small>${i.t}</small></div><div class="item-text"><div class="item-name">${i.n}</div><div class="item-meta">${i.q} · ${i.o}</div></div>`)
+    : el('item item--mini is-'+i.s,`<span class="item-bar"></span><div class="item-date">${i.d}</div><div class="item-text"><div class="item-name">${i.n}</div><div class="item-meta">${i.q}</div></div>`);
+  const rowcard=i=>el('rowcard is-'+i.s+(i.k<=7?' rowcard--urgent':''),`<span class="item-bar"></span><span class="name">${i.n}</span><span>${i.m}</span><span class="num">${i.q}</span><span>${i.o}</span><span class="num">${i.d}</span><span class="state">${label[i.s]}</span>`);
+  items.forEach(i=>{(i.k<=7?$('urgent'):$('later')).append(item(i)); (i.k<=7?$('rows-later'):$('rows')).insertAdjacentElement(i.k<=7?'beforebegin':'beforeend',rowcard(i))});
+  // Lebendiger Moment: Der gescannte Artikel fliegt vom Scan-Knopf in die Liste.
+  $('scan').addEventListener('click',()=>{
+    const r=item(neu); r.classList.add('is-new'); $('later').prepend(r); r.scrollIntoView({block:'nearest'});
+    $('rows-later').after(rowcard(neu));
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches){setTimeout(()=>r.classList.remove('is-new'),1600);return}
+    r.style.opacity=0;
+    const p=$('phone').getBoundingClientRect(), f=$('scan').getBoundingClientRect(), t=r.getBoundingClientRect();
+    const fly=el('fly',neu.n); $('phone').append(fly);
+    const x0=f.left-p.left, y0=f.top-p.top, x1=t.left-p.left+16, y1=t.top-p.top+14;
+    fly.style.left=x0+'px'; fly.style.top=y0+'px';
+    fly.animate([{transform:'translate(0,0) scale(1)'},
+                 {transform:`translate(${(x1-x0)*.5}px,${(y1-y0)*.75-70}px) scale(1.12) rotate(-6deg)`,offset:.55},
+                 {transform:`translate(${x1-x0}px,${y1-y0}px) scale(.9)`,opacity:.2}],
+                {duration:720,easing:'cubic-bezier(.16,1,.3,1)'}).onfinish=()=>{fly.remove();
+      r.animate([{opacity:0,transform:'scale(.96)'},{opacity:1,transform:'scale(1)'}],{duration:260,easing:'ease-out',fill:'forwards'});
+      setTimeout(()=>r.classList.remove('is-new'),1600)};
+  });
+</script>
+</body>
+</html>
