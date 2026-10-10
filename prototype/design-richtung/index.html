@@ -27,6 +27,13 @@
   [data-v=c]{--bg:#0C0D0F;--s1:#141518;--s2:#1B1D21;--hair:#2A2D33;--ink:#F0EFEA;--mute:#9C9B95;
     --accent:#2FD9F0;--on-accent:#06222A;--r:4px;--r-card:6px;--font:"Space Grotesk",system-ui,sans-serif;--num:"JetBrains Mono",ui-monospace,monospace}
 
+  /* D · Mischung nach Jakob: Grund aus A, Karten aus C, Balken und Datumsgröße aus B, KI in Magenta */
+  [data-v=d],[data-v=e]{--bg:#0A0C11;--s1:#10131A;--s2:#161A23;--hair:#262C3A;--ink:#EDF1F7;--mute:#98A2B3;
+    --accent:#2FD9F0;--on-accent:#06222A;--r:12px;--r-card:8px;--font:"Geist",system-ui,sans-serif;--num:"Geist",system-ui,sans-serif;
+    --ki:#E0468F;--ki-text:#F58BB8}
+  /* E · Mutig: Dringlichkeit bestimmt die Größe */
+  [data-v=e]{--r:14px;--r-card:10px;--font:"Space Grotesk",system-ui,sans-serif;--num:"Space Grotesk",system-ui,sans-serif}
+
   body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.45;min-height:100dvh}
   .proto{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:14px 20px;border-bottom:1px solid var(--hair);font-size:14px;color:var(--mute)}
   .proto strong{color:var(--ink);font-weight:600}
@@ -70,6 +77,55 @@
   [data-v=c] .due{order:-1;text-align:left;font-size:20px;letter-spacing:-.02em;border-right:1px dashed var(--hair);padding-right:10px}
   [data-v=c] .top h1{text-transform:uppercase;letter-spacing:.02em;font-size:22px}
 
+  /* D: Karte = Balken | Datum | gestrichelte Linie | Produkt */
+  [data-v=d] .row,[data-v=e] .row{grid-template-columns:4px 84px 1fr;gap:0;padding:0;background:var(--s2);border:1px solid var(--hair);min-height:66px;align-items:stretch;overflow:hidden}
+  .sbar{background:var(--ok);border-radius:2px;margin:10px 0 10px 8px;width:4px}
+  .soon .sbar{background:var(--soon)} .over .sbar{background:var(--over)}
+  [data-v=d] .due,[data-v=e] .due{order:0;text-align:left;font-size:14px;font-weight:600;padding:0 10px 0 12px;align-self:center}
+  .txt{border-left:1px dashed var(--hair);padding:12px 14px;align-self:stretch;display:flex;flex-direction:column;justify-content:center}
+  [data-v=d] .fab{height:52px;padding:0 18px;font-size:15px;border-radius:14px}
+  [data-v=d] .fab i{font-size:22px}
+  [data-v=d] .btn.ki,[data-v=e] .btn.ki{border-color:var(--ki);color:var(--ki-text)}
+  /* D/E Desktop: jede Zeile ein eigenes Kärtchen mit kleinem Abstand */
+  .cards{display:none;padding:10px;gap:6px;flex-direction:column}
+  [data-v=d] table{display:none} [data-v=d] .cards{display:flex}
+  .crow,.chead{display:grid;grid-template-columns:4px 1.6fr 1.1fr .7fr 1fr .7fr .8fr;gap:14px;align-items:center;font-size:14px}
+  .chead{color:var(--mute);padding:4px 12px 4px 8px}
+  .crow{background:var(--s2);border:1px solid var(--hair);border-radius:var(--r-card);padding:0 12px 0 8px;min-height:42px}
+  .crow .sbar{margin:8px 0;align-self:stretch}
+  .crow .n{font-variant-numeric:tabular-nums}
+  /* E: Gruppen nach Dringlichkeit, dringende Karten groß, der Rest kompakt */
+  .grp{font-size:13px;color:var(--mute);padding:10px 6px 2px;display:flex;justify-content:space-between}
+  .grp b{color:var(--ink);font-weight:600;font-size:15px}
+  [data-v=e] .list{gap:8px}
+  [data-v=e] .row.big{grid-template-columns:6px 96px 1fr;min-height:104px}
+  [data-v=e] .row.big .sbar{width:6px}
+  [data-v=e] .row.big .due{font-size:44px;line-height:1;letter-spacing:-.04em}
+  [data-v=e] .row.big .due small{font-size:13px;letter-spacing:0;margin-top:4px}
+  [data-v=e] .row.big .name{font-size:20px;font-weight:600;letter-spacing:-.01em}
+  [data-v=e] .row.sm{min-height:50px;grid-template-columns:4px 84px 1fr}
+  [data-v=e] .row.sm .txt{flex-direction:row;justify-content:space-between;align-items:center;gap:10px;padding:8px 14px}
+  [data-v=e] .row.sm .due small{display:none}
+  [data-v=e] .fab{display:none}
+  [data-v=e] .nav{grid-template-columns:1fr 1fr 76px 1fr 1fr;align-items:end}
+  .nav .scan{display:none}
+  [data-v=e] .nav .scan{display:grid;place-items:center;width:68px;height:68px;margin:-30px auto 0;border-radius:22px;background:var(--accent);color:var(--on-accent);border:6px solid var(--s1);font-size:30px}
+  [data-v=e] .top h1{font-size:34px;letter-spacing:-.03em}
+  /* E Desktop: drei Spalten nach Dringlichkeit */
+  .board{display:none;grid-template-columns:1.25fr 1fr 1fr;gap:12px;padding:12px}
+  [data-v=e] table{display:none} [data-v=e] .board{display:grid}
+  .col h4{font-size:15px;font-weight:600;margin:2px 2px 8px;display:flex;justify-content:space-between}
+  .col h4 span{color:var(--mute);font-weight:400}
+  .col{display:flex;flex-direction:column;gap:6px}
+  .bcard{display:grid;grid-template-columns:4px auto 1fr;gap:10px;align-items:center;background:var(--s2);border:1px solid var(--hair);border-radius:var(--r-card);padding:0 12px 0 8px;min-height:46px;font-size:14px}
+  .bcard .sbar{margin:8px 0;align-self:stretch}
+  .bcard b{font-size:15px;font-weight:600}
+  .bcard .when{font-weight:600;min-width:64px}
+  .col.now .bcard{min-height:74px} .col.now .bcard .when{font-size:28px;letter-spacing:-.03em;min-width:84px}
+  .soon .when{color:var(--soon)} .over .when{color:var(--over)} .ok .when{color:var(--ok)}
+  [data-v=e] .hero h3{font-size:clamp(32px,4vw,52px)}
+  [data-v=e] .hero h3 em{font-style:normal;color:var(--accent)}
+
   .fab{position:absolute;right:22px;bottom:96px;height:60px;padding:0 22px;border-radius:var(--r);border:0;background:var(--accent);color:var(--on-accent);font:inherit;font-weight:600;font-size:16px;display:flex;gap:10px;align-items:center;cursor:pointer;transition:transform .15s}
   .fab:active{transform:scale(.97)}
   .fab i{font-size:24px}
@@ -110,6 +166,8 @@
   <a href="?v=a" data-k="a">A · Leuchtlinie</a>
   <a href="?v=b" data-k="b">B · Regal</a>
   <a href="?v=c" data-k="c">C · Etikett</a>
+  <a href="?v=d" data-k="d">D · Mischung</a>
+  <a href="?v=e" data-k="e">E · Mutig</a>
   <span id="desc"></span>
 </div>
 <main>
@@ -131,6 +189,7 @@
       <nav class="nav" aria-label="Hauptnavigation">
         <button aria-current="page" id="tab-vorrat"><i class="ph ph-package"></i>Vorrat</button>
         <button><i class="ph ph-list-checks"></i>Einkauf</button>
+        <button class="scan" id="scan" aria-label="Scannen"><i class="ph ph-barcode"></i></button>
         <button><i class="ph ph-cooking-pot"></i>Rezepte</button>
         <button><i class="ph ph-house-line"></i>Haushalt</button>
       </nav>
@@ -150,10 +209,12 @@
         <thead><tr><th>Artikel</th><th>Marke</th><th>Menge</th><th>Ort</th><th>Fällig</th><th>Zustand</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
+      <div class="cards" id="cards"></div>
+      <div class="board" id="board"></div>
     </div>
     <div class="hero">
       <div>
-        <h3>Wissen, was da ist. Bevor es abläuft.</h3>
+        <h3 id="claim">Wissen, was da ist. Bevor es abläuft.</h3>
         <p>Smart Pantry führt den Vorrat für den ganzen Haushalt: scannen, einräumen, rechtzeitig aufbrauchen.</p>
         <a class="cta" href="#">Einladung anfragen</a>
       </div>
@@ -164,45 +225,70 @@
 </main>
 <script>
   const v=(new URLSearchParams(location.search).get('v')||'a').toLowerCase();
-  document.documentElement.dataset.v=['a','b','c'].includes(v)?v:'a';
-  document.querySelectorAll('.proto a').forEach(a=>a.setAttribute('aria-current',a.dataset.k===document.documentElement.dataset.v));
+  const V=['a','b','c','d','e'].includes(v)?v:'a';
+  document.documentElement.dataset.v=V;
+  document.querySelectorAll('.proto a').forEach(a=>a.setAttribute('aria-current',a.dataset.k===V));
   document.getElementById('desc').textContent={
     a:'Nah am Icon: Umrisse statt Flächen, Pillenform, Verlauf als Linie.',
     b:'Ruhige Flächen, ein Akzent, Zustand als Balken. Violett nur für KI.',
-    c:'Datum als Stempel, kantig, Schrift trägt die Gestaltung.'}[document.documentElement.dataset.v];
+    c:'Datum als Stempel, kantig, Schrift trägt die Gestaltung.',
+    d:'Grund aus A, Karten aus C, Balken und Datum aus B, KI in Magenta, Desktop als Kärtchen.',
+    e:'Gleiche Bausteine, aber die Dringlichkeit bestimmt Reihenfolge und Größe.'}[V];
   // Beispieldaten (frei erfunden, Produkte aus der Barcode-Stichprobe)
   const items=[
-    {n:'Grobe Bratwurst',m:'Meine Metzgerei',q:'400 g',o:'Kühlschrank',d:'12.10.',t:'in 2 Tagen',s:'soon'},
-    {n:'Edamame ohne Schale',m:'Freshona',q:'400 g',o:'Gefrierfach',d:'03.03.',t:'in 5 Monaten',s:'ok'},
-    {n:'Schalotten',m:'Lidl',q:'500 g',o:'Vorratsschrank',d:'08.10.',t:'seit 2 Tagen',s:'over'},
-    {n:'Curry Gewürzketchup',m:'ja!',q:'875 ml',o:'Kühlschrank',d:'14.10.',t:'in 4 Tagen',s:'soon'},
-    {n:'Fusilli',m:'Combino',q:'500 g',o:'Vorratsschrank',d:'11.2027',t:'in 13 Monaten',s:'ok'},
-    {n:'Sonnenblumenöl',m:'Bellasan',q:'1 l',o:'Vorratsschrank',d:'06.2027',t:'in 8 Monaten',s:'ok'},
+    {n:'Schalotten',m:'Lidl',q:'500 g',o:'Vorratsschrank',d:'08.10.',t:'seit 2 Tagen',s:'over',k:-2},
+    {n:'Grobe Bratwurst',m:'Meine Metzgerei',q:'400 g',o:'Kühlschrank',d:'12.10.',t:'in 2 Tagen',s:'soon',k:2},
+    {n:'Curry Gewürzketchup',m:'ja!',q:'875 ml',o:'Kühlschrank',d:'14.10.',t:'in 4 Tagen',s:'soon',k:4},
+    {n:'Edamame ohne Schale',m:'Freshona',q:'400 g',o:'Gefrierfach',d:'03.03.',t:'in 5 Monaten',s:'ok',k:144},
+    {n:'Sonnenblumenöl',m:'Bellasan',q:'1 l',o:'Vorratsschrank',d:'06.2027',t:'in 8 Monaten',s:'ok',k:240},
+    {n:'Fusilli',m:'Combino',q:'500 g',o:'Vorratsschrank',d:'11.2027',t:'in 13 Monaten',s:'ok',k:400},
   ];
+  const neu={n:'Sojasoße',m:'Vitasia',q:'250 ml',o:'Vorratsschrank',d:'09.2027',t:'in 11 Monaten',s:'ok',k:330};
   const label={ok:'frisch',soon:'bald fällig',over:'abgelaufen'};
-  const list=document.getElementById('list'), tbody=document.getElementById('tbody');
-  const row=i=>{const el=document.createElement('div');el.className='row '+i.s;
-    el.innerHTML=`<div><div class="name">${i.n}</div><div class="meta">${i.q} · ${i.o}</div></div><div class="due">${i.d}<small>${i.t}</small></div>`;return el};
+  const $=id=>document.getElementById(id);
+  const list=$('list'), tbody=$('tbody'), cards=$('cards'), board=$('board');
+  const el=(cls,html)=>{const e=document.createElement('div');e.className=cls;e.innerHTML=html;return e};
+  // Handy-Zeile je Variante
+  const row=i=>{
+    if(V==='d') return el('row '+i.s,`<span class="sbar"></span><div class="due">${i.d}<small>${i.t}</small></div><div class="txt"><div class="name">${i.n}</div><div class="meta">${i.q} · ${i.o}</div></div>`);
+    if(V==='e'){const big=i.k<=7, num=i.k<0?'+'+(-i.k):i.k;
+      return big? el('row big '+i.s,`<span class="sbar"></span><div class="due">${num}<small>${i.k<0?'Tage drüber':'Tage'}</small></div><div class="txt"><div class="name">${i.n}</div><div class="meta">${i.q} · ${i.o} · ${i.d}</div></div>`)
+               : el('row sm '+i.s,`<span class="sbar"></span><div class="due">${i.d}</div><div class="txt"><div class="name">${i.n}</div><div class="meta">${i.q}</div></div>`)}
+    return el('row '+i.s,`<div><div class="name">${i.n}</div><div class="meta">${i.q} · ${i.o}</div></div><div class="due">${i.d}<small>${i.t}</small></div>`)};
   const tr=i=>`<tr><td>${i.n}</td><td>${i.m}</td><td class="n">${i.q}</td><td>${i.o}</td><td class="n">${i.d}</td><td class="st ${i.s}">${label[i.s]}</td></tr>`;
-  items.forEach(i=>list.append(row(i))); tbody.innerHTML=items.map(tr).join('');
+  const crow=i=>el('crow '+i.s,`<span class="sbar"></span><span>${i.n}</span><span>${i.m}</span><span class="n">${i.q}</span><span>${i.o}</span><span class="n">${i.d}</span><span class="st ${i.s}">${label[i.s]}</span>`);
+  const bcard=(i,now)=>el('bcard '+i.s,`<span class="sbar"></span><span class="when">${now?(i.k<0?'+'+(-i.k):i.k)+' T.':i.d}</span><span><b>${i.n}</b><br><span style="color:var(--mute)">${i.q} · ${i.o}</span></span>`);
+  let later=list;
+  if(V==='e'){
+    const g=(title,hint)=>el('grp',`<b>${title}</b><span>${hint}</span>`);
+    list.append(g('Jetzt aufbrauchen','3 Artikel')); items.filter(i=>i.k<=7).forEach(i=>list.append(row(i)));
+    list.append(g('Hat Zeit','3 Artikel')); later=el('', ''); later.style.cssText='display:flex;flex-direction:column;gap:8px'; list.append(later);
+    items.filter(i=>i.k>7).forEach(i=>later.append(row(i)));
+    const col=(cls,title,arr,now)=>{const c=el('col '+cls,`<h4>${title}<span>${arr.length}</span></h4>`);arr.forEach(i=>c.append(bcard(i,now)));return c};
+    board.append(col('now','Jetzt aufbrauchen',items.filter(i=>i.k<=7),true),col('','In den nächsten Monaten',items.filter(i=>i.k>7&&i.k<200),false),col('later','Hat Zeit',items.filter(i=>i.k>=200),false));
+    $('claim').innerHTML='Erst aufbrauchen. <em>Dann</em> einkaufen.';
+  } else items.forEach(i=>list.append(row(i)));
+  tbody.innerHTML=items.map(tr).join('');
+  cards.append(el('chead','<span></span><span>Artikel</span><span>Marke</span><span>Menge</span><span>Ort</span><span>Fällig</span><span>Zustand</span>'));
+  items.forEach(i=>cards.append(crow(i)));
   // Der lebendige Moment: Artikel fliegt vom Scan-Knopf in die Liste
-  const fab=document.getElementById('fab'), phone=document.getElementById('phone');
-  const neu={n:'Sojasoße',m:'Vitasia',q:'250 ml',o:'Vorratsschrank',d:'09.2027',t:'in 11 Monaten',s:'ok'};
-  fab.addEventListener('click',()=>{
-    const el=row(neu); el.classList.add('new'); list.prepend(el); list.scrollTop=0;
-    tbody.insertAdjacentHTML('afterbegin',tr(neu));
+  const phone=$('phone'), src=V==='e'?$('scan'):$('fab');
+  src.addEventListener('click',()=>{
+    const r=row(neu); r.classList.add('new'); later.prepend(r); r.scrollIntoView({block:'nearest'});
+    tbody.insertAdjacentHTML('afterbegin',tr(neu)); cards.children[0].after(crow(neu));
+    if(V==='e') board.querySelector('.col.later').children[0].after(bcard(neu,false));
     if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    el.style.opacity=0;
-    const p=phone.getBoundingClientRect(), f=fab.getBoundingClientRect(), t=el.getBoundingClientRect();
-    const fly=document.createElement('div'); fly.className='fly'; fly.textContent=neu.n; phone.append(fly);
-    const x0=f.left-p.left, y0=f.top-p.top, x1=t.left-p.left+16, y1=t.top-p.top+18;
+    r.style.opacity=0;
+    const p=phone.getBoundingClientRect(), f=src.getBoundingClientRect(), t=r.getBoundingClientRect();
+    const fly=el('fly',neu.n); phone.append(fly);
+    const x0=f.left-p.left, y0=f.top-p.top, x1=t.left-p.left+16, y1=t.top-p.top+14;
     fly.style.left=x0+'px'; fly.style.top=y0+'px';
     fly.animate([{transform:'translate(0,0) scale(1)'},
                  {transform:`translate(${(x1-x0)*.5}px,${(y1-y0)*.75-70}px) scale(1.12) rotate(-6deg)`,offset:.55},
                  {transform:`translate(${x1-x0}px,${y1-y0}px) scale(.9)`,opacity:.2}],
                 {duration:720,easing:'cubic-bezier(.16,1,.3,1)'}).onfinish=()=>{fly.remove();
-      el.animate([{opacity:0,transform:'scale(.96)'},{opacity:1,transform:'scale(1)'}],{duration:260,easing:'ease-out',fill:'forwards'});
-      setTimeout(()=>el.classList.remove('new'),1600)};
+      r.animate([{opacity:0,transform:'scale(.96)'},{opacity:1,transform:'scale(1)'}],{duration:260,easing:'ease-out',fill:'forwards'});
+      setTimeout(()=>r.classList.remove('new'),1600)};
   });
 </script>
 </body>
