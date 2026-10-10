@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="de" data-v="a">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Pantry: Wegwerf-Prototyp Design-Richtung</title>
+<!-- WEGWERF-PROTOTYP. Kein Produktcode. Varianten per ?v=a|b|c. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&family=Geist:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+  *{box-sizing:border-box;margin:0}
+  /* Gemeinsam: Zustandsfarben und Icon-Verlauf */
+  :root{
+    --cyan:#2FD9F0; --violet:#8E5BF2;
+    --line:linear-gradient(135deg,var(--cyan),var(--violet));
+    --ok:#4FBF8B; --soon:#E0A93B; --over:#E5645B;
+    --ease:cubic-bezier(.16,1,.3,1);
+  }
+  /* A · Leuchtlinie: nah am Icon, Umrisse statt Flächen, Pillenform */
+  [data-v=a]{--bg:#0A0C11;--s1:#10131A;--s2:#161A23;--hair:#232937;--ink:#EDF1F7;--mute:#98A2B3;
+    --accent:#2FD9F0;--on-accent:#06222A;--r:999px;--r-card:22px;--font:"Outfit",system-ui,sans-serif;--num:"Outfit",system-ui,sans-serif}
+  /* B · Regal: ruhige Flächen, ein Akzent, Violett nur für KI */
+  [data-v=b]{--bg:#0E1114;--s1:#161A1F;--s2:#1D2228;--hair:#272D35;--ink:#E9EDF1;--mute:#93A0AD;
+    --accent:#3CCBE0;--on-accent:#062328;--r:12px;--r-card:14px;--font:"Geist",system-ui,sans-serif;--num:"Geist",system-ui,sans-serif}
+  /* C · Etikett: Datum als Stempel, kantig, Schrift trägt */
+  [data-v=c]{--bg:#0C0D0F;--s1:#141518;--s2:#1B1D21;--hair:#2A2D33;--ink:#F0EFEA;--mute:#9C9B95;
+    --accent:#2FD9F0;--on-accent:#06222A;--r:4px;--r-card:6px;--font:"Space Grotesk",system-ui,sans-serif;--num:"JetBrains Mono",ui-monospace,monospace}
+
+  body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.45;min-height:100dvh}
+  .proto{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:14px 20px;border-bottom:1px solid var(--hair);font-size:14px;color:var(--mute)}
+  .proto strong{color:var(--ink);font-weight:600}
+  .proto a{color:var(--ink);text-decoration:none;padding:8px 14px;border:1px solid var(--hair);border-radius:var(--r);min-height:40px;display:inline-flex;align-items:center}
+  .proto a[aria-current=true]{border-color:var(--accent);color:var(--accent)}
+  main{max-width:1400px;margin:0 auto;padding:28px 20px 64px;display:grid;grid-template-columns:390px 1fr;gap:40px;align-items:start}
+  @media (max-width:980px){main{grid-template-columns:1fr}}
+  h2{font-size:14px;font-weight:500;color:var(--mute);margin-bottom:12px}
+
+  /* Handy */
+  .phone{background:var(--s1);border:1px solid var(--hair);border-radius:36px;padding:14px;position:relative;overflow:hidden;height:780px;display:flex;flex-direction:column}
+  .top{display:flex;align-items:center;justify-content:space-between;padding:10px 8px 14px}
+  .top h1{font-size:26px;font-weight:600;letter-spacing:-.02em}
+  .top .sub{font-size:14px;color:var(--mute)}
+  .icon-btn{width:48px;height:48px;border-radius:var(--r);border:1px solid var(--hair);background:transparent;color:var(--ink);font-size:22px;display:grid;place-items:center;cursor:pointer}
+  .chips{display:flex;gap:8px;padding:0 8px 12px;overflow:auto}
+  .chip{white-space:nowrap;padding:10px 16px;border-radius:var(--r);border:1px solid var(--hair);background:transparent;color:var(--mute);font:inherit;font-size:14px;min-height:44px;cursor:pointer}
+  .chip[aria-pressed=true]{color:var(--ink);border-color:var(--ink)}
+  .list{flex:1;overflow:auto;padding:0 4px 84px;display:flex;flex-direction:column;gap:10px}
+  .row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:14px 16px;min-height:68px;background:var(--s2);border-radius:var(--r-card);border:1px solid transparent;transition:transform .5s var(--ease),opacity .35s}
+  .row .name{font-weight:500}
+  .row .meta{font-size:14px;color:var(--mute)}
+  .due{font-family:var(--num);font-size:14px;font-weight:600;text-align:right}
+  .due small{display:block;font-weight:400;font-size:12px;color:var(--mute);font-family:var(--font);white-space:nowrap}
+  .ok .due{color:var(--ok)} .soon .due{color:var(--soon)} .over .due{color:var(--over)}
+  .row.new{border-color:var(--accent)}
+
+  /* A: Umriss-Pillen wie die Listenstriche im Icon */
+  [data-v=a] .row{background:transparent;border:1.5px solid var(--hair);border-radius:28px}
+  [data-v=a] .row.soon{border-color:color-mix(in srgb,var(--soon) 55%,var(--hair))}
+  [data-v=a] .row.over{border-color:color-mix(in srgb,var(--over) 55%,var(--hair))}
+  [data-v=a] .top h1{background:var(--line);-webkit-background-clip:text;background-clip:text;color:transparent}
+  /* B: flache Liste, Zustand als schmaler Balken links */
+  [data-v=b] .list{gap:0}
+  [data-v=b] .row{background:transparent;border-radius:0;border-bottom:1px solid var(--hair);padding-left:18px;position:relative}
+  [data-v=b] .row::before{content:"";position:absolute;left:4px;top:16px;bottom:16px;width:4px;border-radius:2px;background:var(--ok)}
+  [data-v=b] .row.soon::before{background:var(--soon)} [data-v=b] .row.over::before{background:var(--over)}
+  [data-v=b] .row.new{border-color:var(--hair);background:color-mix(in srgb,var(--accent) 9%,transparent)}
+  /* C: Datum als Stempel links, wie ein Etikett auf dem Glas */
+  [data-v=c] .row{grid-template-columns:112px 1fr;background:var(--s2);border:1px solid var(--hair)}
+  [data-v=c] .due{order:-1;text-align:left;font-size:20px;letter-spacing:-.02em;border-right:1px dashed var(--hair);padding-right:10px}
+  [data-v=c] .top h1{text-transform:uppercase;letter-spacing:.02em;font-size:22px}
+
+  .fab{position:absolute;right:22px;bottom:96px;height:60px;padding:0 22px;border-radius:var(--r);border:0;background:var(--accent);color:var(--on-accent);font:inherit;font-weight:600;font-size:16px;display:flex;gap:10px;align-items:center;cursor:pointer;transition:transform .15s}
+  .fab:active{transform:scale(.97)}
+  .fab i{font-size:24px}
+  [data-v=a] .fab{background:var(--bg);color:var(--ink);border:1.5px solid transparent;background-image:linear-gradient(var(--bg),var(--bg)),var(--line);background-origin:border-box;background-clip:padding-box,border-box}
+  .nav{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--hair);margin:10px -14px -14px;padding:8px 6px 14px;background:var(--s1)}
+  .nav button{background:none;border:0;color:var(--mute);font:inherit;font-size:12px;display:grid;justify-items:center;gap:4px;min-height:56px;cursor:pointer}
+  .nav button i{font-size:26px}
+  .nav button[aria-current=page]{color:var(--accent)}
+  .fly{position:absolute;z-index:5;padding:10px 16px;border-radius:var(--r);background:var(--accent);color:var(--on-accent);font-weight:600;font-size:14px;pointer-events:none}
+
+  /* Desktop: dicht */
+  .desk{background:var(--s1);border:1px solid var(--hair);border-radius:var(--r-card);overflow:hidden}
+  .bar{display:flex;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--hair)}
+  .bar input{flex:1;max-width:320px;background:var(--bg);border:1px solid var(--hair);color:var(--ink);font:inherit;font-size:14px;padding:9px 12px;border-radius:var(--r)}
+  .bar label{font-size:13px;color:var(--mute)}
+  .btn{padding:9px 14px;border-radius:var(--r);border:1px solid var(--hair);background:transparent;color:var(--ink);font:inherit;font-size:14px;cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+  .btn.ki{border-color:var(--violet);color:#C4AEFA}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{text-align:left;font-weight:500;color:var(--mute);padding:10px 16px;border-bottom:1px solid var(--hair)}
+  td{padding:9px 16px;border-bottom:1px solid color-mix(in srgb,var(--hair) 60%,transparent)}
+  tr:last-child td{border-bottom:0}
+  td.n{font-family:var(--num);font-variant-numeric:tabular-nums}
+  .st{font-weight:600} .st.ok{color:var(--ok)} .st.soon{color:var(--soon)} .st.over{color:var(--over)}
+  .hero{margin-top:36px;display:grid;grid-template-columns:1.3fr 1fr;gap:28px;align-items:center;padding:36px;border:1px solid var(--hair);border-radius:var(--r-card);background:var(--s1)}
+  @media (max-width:980px){.hero{grid-template-columns:1fr;padding:22px}}
+  .hero h3{font-size:clamp(30px,4vw,48px);line-height:1.05;letter-spacing:-.03em;font-weight:600}
+  .hero p{color:var(--mute);margin:14px 0 22px;max-width:46ch}
+  .cta{display:inline-flex;height:52px;align-items:center;padding:0 24px;border-radius:var(--r);background:var(--accent);color:var(--on-accent);font-weight:600;text-decoration:none}
+  .hero img{width:100%;max-width:240px;justify-self:center;border-radius:28%}
+  .note{font-size:14px;color:var(--mute);margin-top:14px;max-width:70ch}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="proto">
+  <strong>Wegwerf-Prototyp</strong> Variante:
+  <a href="?v=a" data-k="a">A · Leuchtlinie</a>
+  <a href="?v=b" data-k="b">B · Regal</a>
+  <a href="?v=c" data-k="c">C · Etikett</a>
+  <span id="desc"></span>
+</div>
+<main>
+  <section>
+    <h2>Handy: Vorrat (ruhig, große Tippflächen)</h2>
+    <div class="phone" id="phone">
+      <div class="top">
+        <div><h1>Vorrat</h1><div class="sub">Haushalt Leibel · 3 bald fällig</div></div>
+        <button class="icon-btn" aria-label="Suchen"><i class="ph ph-magnifying-glass"></i></button>
+      </div>
+      <div class="chips">
+        <button class="chip" aria-pressed="true">Alle</button>
+        <button class="chip" aria-pressed="false">Bald fällig</button>
+        <button class="chip" aria-pressed="false">Kühlschrank</button>
+        <button class="chip" aria-pressed="false">Vorratsschrank</button>
+      </div>
+      <div class="list" id="list"></div>
+      <button class="fab" id="fab"><i class="ph ph-barcode"></i>Scannen</button>
+      <nav class="nav" aria-label="Hauptnavigation">
+        <button aria-current="page" id="tab-vorrat"><i class="ph ph-package"></i>Vorrat</button>
+        <button><i class="ph ph-list-checks"></i>Einkauf</button>
+        <button><i class="ph ph-cooking-pot"></i>Rezepte</button>
+        <button><i class="ph ph-house-line"></i>Haushalt</button>
+      </nav>
+    </div>
+    <p class="note">Auf „Scannen“ tippen: Der erkannte Artikel fliegt in die Liste. Das ist der eine lebendige Moment; alles andere bleibt ruhig.</p>
+  </section>
+  <section>
+    <h2>Desktop: Vorrat (dicht, Tabelle)</h2>
+    <div class="desk">
+      <div class="bar">
+        <input aria-label="Vorrat durchsuchen" value="" placeholder="Suchen">
+        <button class="btn"><i class="ph ph-funnel"></i>Filter</button>
+        <button class="btn"><i class="ph ph-plus"></i>Artikel</button>
+        <button class="btn ki"><i class="ph ph-camera"></i>Foto erkennen</button>
+      </div>
+      <table>
+        <thead><tr><th>Artikel</th><th>Marke</th><th>Menge</th><th>Ort</th><th>Fällig</th><th>Zustand</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="hero">
+      <div>
+        <h3>Wissen, was da ist. Bevor es abläuft.</h3>
+        <p>Smart Pantry führt den Vorrat für den ganzen Haushalt: scannen, einräumen, rechtzeitig aufbrauchen.</p>
+        <a class="cta" href="#">Einladung anfragen</a>
+      </div>
+      <img src="../../public/smart-pantry-favicon.png" alt="Icon von Smart Pantry: Kühlschrank und Liste als Leuchtlinie">
+    </div>
+    <p class="note">Ausschnitt der Marketing-Seite in derselben Sprache. Beispieldaten, keine echten Bestände.</p>
+  </section>
+</main>
+<script>
+  const v=(new URLSearchParams(location.search).get('v')||'a').toLowerCase();
+  document.documentElement.dataset.v=['a','b','c'].includes(v)?v:'a';
+  document.querySelectorAll('.proto a').forEach(a=>a.setAttribute('aria-current',a.dataset.k===document.documentElement.dataset.v));
+  document.getElementById('desc').textContent={
+    a:'Nah am Icon: Umrisse statt Flächen, Pillenform, Verlauf als Linie.',
+    b:'Ruhige Flächen, ein Akzent, Zustand als Balken. Violett nur für KI.',
+    c:'Datum als Stempel, kantig, Schrift trägt die Gestaltung.'}[document.documentElement.dataset.v];
+  // Beispieldaten (frei erfunden, Produkte aus der Barcode-Stichprobe)
+  const items=[
+    {n:'Grobe Bratwurst',m:'Meine Metzgerei',q:'400 g',o:'Kühlschrank',d:'12.10.',t:'in 2 Tagen',s:'soon'},
+    {n:'Edamame ohne Schale',m:'Freshona',q:'400 g',o:'Gefrierfach',d:'03.03.',t:'in 5 Monaten',s:'ok'},
+    {n:'Schalotten',m:'Lidl',q:'500 g',o:'Vorratsschrank',d:'08.10.',t:'seit 2 Tagen',s:'over'},
+    {n:'Curry Gewürzketchup',m:'ja!',q:'875 ml',o:'Kühlschrank',d:'14.10.',t:'in 4 Tagen',s:'soon'},
+    {n:'Fusilli',m:'Combino',q:'500 g',o:'Vorratsschrank',d:'11.2027',t:'in 13 Monaten',s:'ok'},
+    {n:'Sonnenblumenöl',m:'Bellasan',q:'1 l',o:'Vorratsschrank',d:'06.2027',t:'in 8 Monaten',s:'ok'},
+  ];
+  const label={ok:'frisch',soon:'bald fällig',over:'abgelaufen'};
+  const list=document.getElementById('list'), tbody=document.getElementById('tbody');
+  const row=i=>{const el=document.createElement('div');el.className='row '+i.s;
+    el.innerHTML=`<div><div class="name">${i.n}</div><div class="meta">${i.q} · ${i.o}</div></div><div class="due">${i.d}<small>${i.t}</small></div>`;return el};
+  const tr=i=>`<tr><td>${i.n}</td><td>${i.m}</td><td class="n">${i.q}</td><td>${i.o}</td><td class="n">${i.d}</td><td class="st ${i.s}">${label[i.s]}</td></tr>`;
+  items.forEach(i=>list.append(row(i))); tbody.innerHTML=items.map(tr).join('');
+  // Der lebendige Moment: Artikel fliegt vom Scan-Knopf in die Liste
+  const fab=document.getElementById('fab'), phone=document.getElementById('phone');
+  const neu={n:'Sojasoße',m:'Vitasia',q:'250 ml',o:'Vorratsschrank',d:'09.2027',t:'in 11 Monaten',s:'ok'};
+  fab.addEventListener('click',()=>{
+    const el=row(neu); el.classList.add('new'); list.prepend(el); list.scrollTop=0;
+    tbody.insertAdjacentHTML('afterbegin',tr(neu));
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    el.style.opacity=0;
+    const p=phone.getBoundingClientRect(), f=fab.getBoundingClientRect(), t=el.getBoundingClientRect();
+    const fly=document.createElement('div'); fly.className='fly'; fly.textContent=neu.n; phone.append(fly);
+    const x0=f.left-p.left, y0=f.top-p.top, x1=t.left-p.left+16, y1=t.top-p.top+18;
+    fly.style.left=x0+'px'; fly.style.top=y0+'px';
+    fly.animate([{transform:'translate(0,0) scale(1)'},
+                 {transform:`translate(${(x1-x0)*.5}px,${(y1-y0)*.75-70}px) scale(1.12) rotate(-6deg)`,offset:.55},
+                 {transform:`translate(${x1-x0}px,${y1-y0}px) scale(.9)`,opacity:.2}],
+                {duration:720,easing:'cubic-bezier(.16,1,.3,1)'}).onfinish=()=>{fly.remove();
+      el.animate([{opacity:0,transform:'scale(.96)'},{opacity:1,transform:'scale(1)'}],{duration:260,easing:'ease-out',fill:'forwards'});
+      setTimeout(()=>el.classList.remove('new'),1600)};
+  });
+</script>
+</body>
+</html>
