@@ -34,6 +34,11 @@
   /* E · Mutig: Dringlichkeit bestimmt die Größe */
   [data-v=e]{--r:14px;--r-card:10px;--font:"Space Grotesk",system-ui,sans-serif;--num:"Space Grotesk",system-ui,sans-serif}
 
+  /* F · Stand nach Jakobs Rückmeldung: D als Basis, Gruppen, Mini-Liste und Navigation aus E */
+  [data-v=f]{--bg:#06070A;--s1:#0C0E13;--s2:#12151C;--hair:#242A37;--ink:#EDF1F7;--mute:#98A2B3;
+    --accent:#2FD9F0;--on-accent:#06222A;--r:12px;--r-card:8px;--font:"Geist",system-ui,sans-serif;--num:"Geist",system-ui,sans-serif;
+    --ki:#E0468F;--ki-text:#F58BB8}
+
   body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.45;min-height:100dvh}
   .proto{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:14px 20px;border-bottom:1px solid var(--hair);font-size:14px;color:var(--mute)}
   .proto strong{color:var(--ink);font-weight:600}
@@ -126,6 +131,27 @@
   [data-v=e] .hero h3{font-size:clamp(32px,4vw,52px)}
   [data-v=e] .hero h3 em{font-style:normal;color:var(--accent)}
 
+  /* F: Karte = Balken | Datum | kurze gestrichelte Linie | Produkt */
+  [data-v=f] .chip{border-radius:4px}
+  [data-v=f] .list{gap:8px}
+  [data-v=f] .row{grid-template-columns:4px 104px 1fr;gap:0;padding:0;background:var(--s2);border:1px solid var(--hair);min-height:66px;align-items:center;overflow:hidden}
+  [data-v=f] .row .sbar{align-self:stretch}
+  [data-v=f] .due{order:0;text-align:left;font-size:14px;font-weight:600;margin-left:16px;padding:4px 10px 4px 0;border-right:1px dashed var(--hair)}
+  [data-v=f] .txt{border-left:0;padding:10px 14px}
+  [data-v=f] .row.sm{min-height:50px}
+  [data-v=f] .row.sm .txt{flex-direction:row;justify-content:space-between;align-items:center;gap:10px;padding:8px 14px}
+  [data-v=f] .row.sm .due small{display:none}
+  [data-v=f] .fab{display:none}
+  [data-v=f] .nav{grid-template-columns:1fr 1fr 76px 1fr 1fr;align-items:end}
+  [data-v=f] .nav .scan{display:grid;place-items:center;width:68px;height:68px;margin:-30px auto 0;border-radius:22px;background:var(--accent);color:var(--on-accent);border:6px solid var(--s1);font-size:30px}
+  [data-v=f] .btn.ki{border-color:var(--ki);color:var(--ki-text)}
+  [data-v=f] table{display:none} [data-v=f] .cards{display:flex}
+  [data-v=f] .crow.urgent{min-height:52px;font-size:15px}
+  [data-v=f] .crow.urgent span:nth-child(2){font-weight:600}
+  .cgrp{font-size:13px;color:var(--mute);padding:10px 12px 2px 8px;display:flex;gap:10px;align-items:baseline}
+  .cgrp b{color:var(--ink);font-weight:600;font-size:14px}
+  .cgrp:not(:first-child){margin-top:10px}
+
   .fab{position:absolute;right:22px;bottom:96px;height:60px;padding:0 22px;border-radius:var(--r);border:0;background:var(--accent);color:var(--on-accent);font:inherit;font-weight:600;font-size:16px;display:flex;gap:10px;align-items:center;cursor:pointer;transition:transform .15s}
   .fab:active{transform:scale(.97)}
   .fab i{font-size:24px}
@@ -168,6 +194,7 @@
   <a href="?v=c" data-k="c">C · Etikett</a>
   <a href="?v=d" data-k="d">D · Mischung</a>
   <a href="?v=e" data-k="e">E · Mutig</a>
+  <a href="?v=f" data-k="f">F · Stand</a>
   <span id="desc"></span>
 </div>
 <main>
@@ -225,7 +252,7 @@
 </main>
 <script>
   const v=(new URLSearchParams(location.search).get('v')||'a').toLowerCase();
-  const V=['a','b','c','d','e'].includes(v)?v:'a';
+  const V=['a','b','c','d','e','f'].includes(v)?v:'a';
   document.documentElement.dataset.v=V;
   document.querySelectorAll('.proto a').forEach(a=>a.setAttribute('aria-current',a.dataset.k===V));
   document.getElementById('desc').textContent={
@@ -233,7 +260,8 @@
     b:'Ruhige Flächen, ein Akzent, Zustand als Balken. Violett nur für KI.',
     c:'Datum als Stempel, kantig, Schrift trägt die Gestaltung.',
     d:'Grund aus A, Karten aus C, Balken und Datum aus B, KI in Magenta, Desktop als Kärtchen.',
-    e:'Gleiche Bausteine, aber die Dringlichkeit bestimmt Reihenfolge und Größe.'}[V];
+    e:'Gleiche Bausteine, aber die Dringlichkeit bestimmt Reihenfolge und Größe.',
+    f:'D als Basis, dunkler Grund, Gruppen und Mini-Liste aus E, Scannen in der Navigation.'}[V];
   // Beispieldaten (frei erfunden, Produkte aus der Barcode-Stichprobe)
   const items=[
     {n:'Schalotten',m:'Lidl',q:'500 g',o:'Vorratsschrank',d:'08.10.',t:'seit 2 Tagen',s:'over',k:-2},
@@ -251,6 +279,9 @@
   // Handy-Zeile je Variante
   const row=i=>{
     if(V==='d') return el('row '+i.s,`<span class="sbar"></span><div class="due">${i.d}<small>${i.t}</small></div><div class="txt"><div class="name">${i.n}</div><div class="meta">${i.q} · ${i.o}</div></div>`);
+    if(V==='f') return i.k<=7
+      ? el('row '+i.s,`<span class="sbar"></span><div class="due">${i.d}<small>${i.t}</small></div><div class="txt"><div class="name">${i.n}</div><div class="meta">${i.q} · ${i.o}</div></div>`)
+      : el('row sm '+i.s,`<span class="sbar"></span><div class="due">${i.d}</div><div class="txt"><div class="name">${i.n}</div><div class="meta">${i.q}</div></div>`);
     if(V==='e'){const big=i.k<=7, num=i.k<0?'+'+(-i.k):i.k;
       return big? el('row big '+i.s,`<span class="sbar"></span><div class="due">${num}<small>${i.k<0?'Tage drüber':'Tage'}</small></div><div class="txt"><div class="name">${i.n}</div><div class="meta">${i.q} · ${i.o} · ${i.d}</div></div>`)
                : el('row sm '+i.s,`<span class="sbar"></span><div class="due">${i.d}</div><div class="txt"><div class="name">${i.n}</div><div class="meta">${i.q}</div></div>`)}
@@ -267,15 +298,25 @@
     const col=(cls,title,arr,now)=>{const c=el('col '+cls,`<h4>${title}<span>${arr.length}</span></h4>`);arr.forEach(i=>c.append(bcard(i,now)));return c};
     board.append(col('now','Jetzt aufbrauchen',items.filter(i=>i.k<=7),true),col('','In den nächsten Monaten',items.filter(i=>i.k>7&&i.k<200),false),col('later','Hat Zeit',items.filter(i=>i.k>=200),false));
     $('claim').innerHTML='Erst aufbrauchen. <em>Dann</em> einkaufen.';
+  } else if(V==='f'){
+    const g=(title,hint)=>el('grp',`<b>${title}</b><span>${hint}</span>`);
+    list.append(g('Jetzt aufbrauchen','3 Artikel')); items.filter(i=>i.k<=7).forEach(i=>list.append(row(i)));
+    list.append(g('Hat Zeit','3 Artikel')); later=el('',''); later.style.cssText='display:flex;flex-direction:column;gap:8px'; list.append(later);
+    items.filter(i=>i.k>7).forEach(i=>later.append(row(i)));
   } else items.forEach(i=>list.append(row(i)));
   tbody.innerHTML=items.map(tr).join('');
   cards.append(el('chead','<span></span><span>Artikel</span><span>Marke</span><span>Menge</span><span>Ort</span><span>Fällig</span><span>Zustand</span>'));
-  items.forEach(i=>cards.append(crow(i)));
+  if(V==='f'){
+    cards.append(el('cgrp','<b>Jetzt aufbrauchen</b><span>3 Artikel</span>'));
+    items.filter(i=>i.k<=7).forEach(i=>{const c=crow(i);c.classList.add('urgent');cards.append(c)});
+    const h=el('cgrp','<b>Hat Zeit</b><span>3 Artikel</span>'); h.id='cgl'; cards.append(h);
+    items.filter(i=>i.k>7).forEach(i=>cards.append(crow(i)));
+  } else items.forEach(i=>cards.append(crow(i)));
   // Der lebendige Moment: Artikel fliegt vom Scan-Knopf in die Liste
-  const phone=$('phone'), src=V==='e'?$('scan'):$('fab');
+  const phone=$('phone'), src=(V==='e'||V==='f')?$('scan'):$('fab');
   src.addEventListener('click',()=>{
     const r=row(neu); r.classList.add('new'); later.prepend(r); r.scrollIntoView({block:'nearest'});
-    tbody.insertAdjacentHTML('afterbegin',tr(neu)); cards.children[0].after(crow(neu));
+    tbody.insertAdjacentHTML('afterbegin',tr(neu)); (V==='f'?$('cgl'):cards.children[0]).after(crow(neu));
     if(V==='e') board.querySelector('.col.later').children[0].after(bcard(neu,false));
     if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     r.style.opacity=0;
